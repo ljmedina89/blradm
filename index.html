@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Rastreo de Paquetes | BLR</title>
+<meta name="color-scheme" content="light dark"/>
+<style>
+  :root{--bg:#0b0c10;--panel:#111318;--muted:#9aa4ae;--text:#e8edf2;--chip:#1b1f2a;--border:#232734}
+  body{margin:0;background:linear-gradient(180deg,#0b0c10,#0d1117);color:var(--text);font:16px/1.5 system-ui,Segoe UI,Inter}
+  .container{max-width:980px;margin:auto;padding:24px}
+  .panel{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));border:1px solid var(--border);border-radius:18px;padding:16px}
+  .title{font-size:28px;font-weight:800;margin:0}
+  .search{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:16px}
+  .input{padding:14px;border-radius:12px;border:1px solid var(--border);background:#0f131a;color:var(--text)}
+  .btn{cursor:pointer;border:1px solid #2d3a7b;background:linear-gradient(180deg,#2b47e5,#2038d0);color:#fff;border-radius:12px;padding:14px 18px;font-weight:700}
+  table{width:100%;border-collapse:collapse} th,td{padding:12px;border-bottom:1px dashed var(--border);text-align:left}
+  .muted{color:var(--muted)} .empty{border:1px dashed var(--border);border-radius:14px;padding:16px;text-align:center;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="container">
+  <section class="panel">
+    <h1 class="title">Rastrea tus paquetes</h1>
+    <div class="search">
+      <input id="code" class="input" placeholder="Ej: BLR-ABC123"/>
+      <button class="btn" id="btnConsultar" onclick="consultar()">Consultar</button>
+    </div>
+  </section>
+
+  <section id="result" style="display:none;margin-top:14px">
+    <div class="panel">
+      <b>Libras pendientes:</b> <span id="lbsPendientes">0.00</span> &nbsp;&nbsp; |
+      &nbsp;&nbsp; <b>Libras enviadas:</b> <span id="lbsEnviadas">0.00</span>
+    </div>
+    <div class="panel" style="margin-top:14px">
+      <h3>Pendientes</h3><div id="pendientes"></div>
+    </div>
+    <div class="panel" style="margin-top:14px">
+      <h3>Enviados</h3><div id="enviados"></div>
+    </div>
+  </section>
+
+  <section id="empty" style="display:none;margin-top:14px">
+    <div class="panel empty">Ingresa tu código para ver tus paquetes.</div>
+  </section>
+</div>
+
+<script>
+const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwV_uFc0iJZ1gccqugHoSuFKmrPTGGkt8PiY52kZlD8ubE1oKozLIuwNr1sX85QODFPFg/exec';
+const $ = s => document.querySelector(s);
+const fmtDate = s => { if(!s) return ''; const d=new Date(s); return isNaN(d)?s:d.toLocaleString(); }
+function show(id,on){ document.querySelector(id).style.display = on? 'block':'none'; }
+function row(p){ return `<tr><td>${p.pkg_code}</td><td>${(p.peso_lb??0).toFixed? p.peso_lb.toFixed(2):p.peso_lb}</td><td>${p.estado}</td><td class="muted">${fmtDate(p.fecha_estado||p.fecha)}</td></tr>`; }
+function table(items){ return (!items||!items.length)? `<div class="empty">Sin registros</div>` : `<div style="overflow:auto"><table><thead><tr><th>Paquete</th><th>Peso</th><th>Estado</th><th>Actualizado</th></tr></thead><tbody>${items.map(row).join('')}</tbody></table></div>`; }
+
+function jsonp(url, ok, fail){
+  const cb='cb_'+Math.random().toString(36).slice(2);
+  window[cb]=d=>{ try{ok(d);}finally{delete window[cb];s.remove();} };
+  const s=document.createElement('script'); s.src=`${url}${url.includes('?')?'&':'?'}callback=${cb}`; s.async=true;
+  s.onerror=()=>{ try{fail&&fail();}finally{delete window[cb];s.remove();} };
+  document.body.appendChild(s);
+}
+
+function render(j, code){
+  if(!j||!j.ok){ document.getElementById('pendientes').innerHTML=`<div class="empty">No se encontraron registros para <b>${code}</b></div>`; document.getElementById('enviados').innerHTML=''; document.getElementById('lbsPendientes').textContent='0.00'; document.getElementById('lbsEnviadas').textContent='0.00'; show('#empty',false); show('#result',true); return; }
+  localStorage.setItem('blr_code', code);
+  document.getElementById('lbsPendientes').textContent = Number(j.lbs_pendientes||0).toFixed(2);
+  document.getElementById('lbsEnviadas').textContent  = Number(j.lbs_enviadas||0).toFixed(2);
+  document.getElementById('pendientes').innerHTML = table(j.pendientes||[]);
+  document.getElementById('enviados').innerHTML   = table(j.enviados||[]);
+  show('#empty',false); show('#result',true);
+}
+
+function consultar(){
+  const code = document.getElementById('code').value.trim();
+  if(!code){ show('#result',false); show('#empty',true); return; }
+  const btn=document.getElementById('btnConsultar'), old=btn.textContent; btn.textContent='Consultando…'; btn.disabled=true;
+  jsonp(`${WEBAPP_URL}?path=api/track&code=${encodeURIComponent(code)}`,
+    d=>{ render(d,code); btn.textContent=old; btn.disabled=false; },
+    ()=>{ alert('Error consultando el servicio.'); btn.textContent=old; btn.disabled=false; }
+  );
+}
+function getQ(n){ const p=new URLSearchParams(location.search); return p.get(n); }
+document.addEventListener('DOMContentLoaded', ()=>{
+  const q = getQ('code') || localStorage.getItem('blr_code');
+  if(q){ document.getElementById('code').value=q; consultar(); } else { show('#empty',true); }
+  document.getElementById('code').addEventListener('keydown', e=>{ if(e.key==='Enter') consultar(); });
+});
+</script>
+</body>
+</html>
