@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>BLR • Panel Principal</title>
+<meta name="color-scheme" content="light dark"/>
+<style>
+  :root{--bg:#0b0c10;--panel:#111318;--muted:#9aa4ae;--text:#e8edf2;--primary:#2563eb;--chip:#1b1f2a;--border:#232734;--shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35)}
+  *{box-sizing:border-box} html,body{height:100%} body{margin:0;background:linear-gradient(180deg,#0b0c10,#0d1117);color:var(--text);font:15px/1.5 system-ui,Segoe UI,Inter,Roboto,Arial}
+  .container{max-width:1100px;margin:auto;padding:24px} a{color:inherit;text-decoration:none}
+  header{display:flex;gap:14px;align-items:center;justify-content:space-between;margin-bottom:16px}
+  .brand{display:flex;gap:10px;align-items:center}.logo{width:36px;height:36px;border-radius:10px;background:radial-gradient(120px 60px at 20% 20%,#3b82f6 0,#1e40af 35%,#111318 65%);display:grid;place-items:center}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .card{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:16px;min-height:170px}
+  .card h3{margin:0 0 10px;font-size:16px}.muted{color:var(--muted)}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  input,select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:#0f131a;color:var(--text)}
+  .btn{cursor:pointer;border:1px solid #2d3a7b;background:linear-gradient(180deg,#2b47e5,#2038d0);color:#fff;border-radius:12px;padding:10px 14px;font-weight:700}
+  .btn.ghost{background:#0f172a;border-color:#2b2f3a}.btn.row{width:100%;display:flex;justify-content:center;gap:8px}
+  table{width:100%;border-collapse:collapse} th,td{padding:10px;border-bottom:1px dashed var(--border);text-align:left}
+  footer{margin-top:24px;text-align:center;color:var(--muted)}
+  @media (max-width:980px){ .grid{grid-template-columns:1fr 1fr} } @media (max-width:680px){ .grid{grid-template-columns:1fr} .row{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <b>BLR Main</b>
+      <span id="sheetState" class="muted">• verificando…</span>
+    </div>
+    <div class="muted">Panel principal — clientes, paquetes, envíos, consulta y tienda</div>
+  </header>
+
+  <div class="grid">
+
+    <section class="card">
+      <h3>Clientes</h3>
+      <div class="row">
+        <div><label class="muted">Nombre</label><input id="cNombre" placeholder="Ej: Linda Martinez"/></div>
+        <div><label class="muted">Teléfono</</label><input id="cTel" placeholder="+1 ..."/></div>
+        <div><label class="muted">Email</label><input id="cEmail" placeholder="correo@ejemplo.com"/></div>
+        <div><label class="muted">Dirección</label><input id="cDir" placeholder="Calle, ciudad"/></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button class="btn" onclick="crearCliente()">+ Crear cliente</button>
+        <button class="btn ghost" onclick="recargarClientes()">Actualizar lista</button>
+      </div>
+      <p id="cOut" class="muted" style="margin-top:8px"></p>
+      <div style="margin-top:6px">
+        <label class="muted">Clientes activos</label>
+        <select id="selCliente"></select>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>Paquetes (ingreso rápido)</h3>
+      <div class="row">
+        <div><label class="muted">Cliente</label><select id="pCliente"></select></div>
+        <div><label class="muted">Peso (lb)</label><input id="pPeso" type="number" step="0.01" min="0.01" placeholder="1.85"/></div>
+      </div>
+      <div style="margin-top:8px"><label class="muted">Nota</label><textarea id="pNota" rows="2" placeholder="Amazon #..."></textarea></div>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button class="btn" onclick="registrarPaquete()">Guardar paquete</button>
+        <button class="btn ghost" onclick="cargarPaquetes()">Ver últimos</button>
+      </div>
+      <p id="pOut" class="muted" style="margin-top:8px"></p>
+    </section>
+
+    <section class="card">
+      <h3>Accesos</h3>
+      <div class="row">
+        <div><label class="muted">Código cliente (para consulta pública)</label><input id="qCode" placeholder="BLR-ABC123"/></div>
+        <div style="display:flex;align-items:flex-end"><button class="btn row" onclick="abrirConsulta()">Abrir consulta pública</button></div>
+      </div>
+      <div class="row" style="margin-top:6px">
+        <button class="btn row" onclick="irAdmin()">Abrir Admin Completo</button>
+        <button class="btn row" onclick="irStore()">Abrir Store</button>
+      </div>
+      <p class="muted" style="margin-top:8px">Admin completo: consolida/envía con tabla extendida.</p>
+    </section>
+
+  </div>
+
+  <section class="card" style="margin-top:14px">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+      <h3 style="margin:0">Últimos paquetes</h3>
+      <div style="display:flex;gap:8px">
+        <select id="fEstado" onchange="cargarPaquetes()">
+          <option value="">Todos</option><option>Recibido</option><option>Consolidado</option><option>Enviado</option>
+        </select>
+        <button class="btn ghost" onclick="cargarPaquetes()">Actualizar</button>
+      </div>
+    </div>
+    <div id="tabla" style="margin-top:10px"></div>
+  </section>
+
+  <footer>© <span id="year"></span> BLR • Panel unificado</footer>
+</div>
+
+<script>
+const API_URL   = 'https://script.google.com/macros/s/AKfycbwV_uFc0iJZ1gccqugHoSuFKmrPTGGkt8PiY52kZlD8ubE1oKozLIuwNr1sX85QODFPFg/exec';
+const TRACK_URL = './search/';
+const ADMIN_URL = './clientes/admin.html';
+const STORE_URL = './beloura-store/';
+
+const $ = s => document.querySelector(s);
+const toQS = o => new URLSearchParams(o).toString();
+const msg = (id,t) => { const el = $('#'+id); el.textContent = t; setTimeout(()=>el.textContent='', 4000); };
+const fmt = n => (Number(n||0).toFixed(2));
+const fmtDate = s => { if(!s) return ''; const d=new Date(s); return isNaN(d)?s:d.toLocaleString(); }
+$('#year').textContent = new Date().getFullYear();
+
+async function apiGet(path, params={}){
+  params._ts = Date.now();
+  const url = `${API_URL}?${toQS({path, ...params})}`;
+  const r = await fetch(url, { method:'GET', headers:{'Accept':'application/json'}, cache:'no-store' });
+  try { return await r.json(); } catch { return {ok:false, error:'bad_json', status:r.status}; }
+}
+async function apiPost(path, body={}){
+  const r = await fetch(API_URL, {
+    method:'POST',
+    headers:{ 'Content-Type':'application/x-www-form-urlencoded' },
+    body: toQS({ path, ...body })
+  });
+  try { return await r.json(); } catch { return {ok:false, error:'bad_json', status:r.status}; }
+}
+
+async function recargarClientes(){
+  const res = await apiGet('api/clients');
+  const list = res.ok ? (res.clients||[]) : [];
+  const html = list.map(c=>`<option value="${c.cliente_code}">${c.cliente_code} — ${c.nombre}</option>`).join('') || '<option value="">(Sin clientes)</option>';
+  $('#selCliente').innerHTML = html;
+  $('#pCliente').innerHTML = html;
+}
+async function crearCliente(){
+  const nombre = $('#cNombre').value.trim();
+  const telefono = $('#cTel').value.trim();
+  const email = $('#cEmail').value.trim();
+  const direccion = $('#cDir').value.trim();
+  if(!nombre) return alert('Nombre requerido');
+  const res = await apiPost('api/clients/create', { nombre, telefono, email, direccion });
+  if(res.ok){
+    msg('cOut','Creado: '+res.cliente_code);
+    $('#cNombre').value = $('#cTel').value = $('#cEmail').value = $('#cDir').value = '';
+    const opt = document.createElement('option');
+    opt.value = res.cliente_code; opt.textContent = `${res.cliente_code} — ${nombre}`;
+    $('#selCliente').prepend(opt); $('#pCliente').prepend(opt.cloneNode(true));
+    $('#selCliente').value = res.cliente_code; $('#pCliente').value = res.cliente_code;
+  } else { msg('cOut','Error: '+(res.error||'')); }
+}
+
+async function registrarPaquete(){
+  const cliente_code = $('#pCliente').value;
+  const peso_lb = parseFloat($('#pPeso').value);
+  const nota = $('#pNota').value.trim();
+  if(!cliente_code) return alert('Selecciona un cliente');
+  if(isNaN(peso_lb) || peso_lb<=0) return alert('Peso inválido');
+  const res = await apiPost('api/packages/create', { cliente_code, peso_lb, nota });
+  if(res.ok){ msg('pOut','Guardado: '+res.pkg_code); $('#pPeso').value=''; $('#pNota').value=''; cargarPaquetes(); }
+  else msg('pOut','Error: '+(res.error||''));
+}
+function estadoSelect(actual){ const opts=['Recibido','Consolidado','Enviado']; return `<select class="estadoSel">${opts.map(o=>`<option ${o===actual?'selected':''}>${o}</option>`).join('')}</select>`; }
+async function cargarPaquetes(){
+  const estado = $('#fEstado').value || '';
+  const res = await apiGet('api/packages', { estado, limit: 20 });
+  const items = res.ok ? (res.packages||[]) : [];
+  const rows = items.map(r=>`
+    <tr data-pkg="${r.pkg_code}">
+      <td>${r.pkg_code}</td><td class="muted">${r.cliente_code}</td><td>${fmt(r.peso_lb)}</td>
+      <td>${estadoSelect(r.estado)}</td><td class="muted">${fmtDate(r.fecha_estado || r.fecha)}</td>
+      <td style="display:flex;gap:6px"><input class="cidInput" placeholder="consolidation_id (opcional)" style="width:170px"/>
+        <button class="btn ghost" onclick="guardarEstado(this)">Guardar</button></td>
+    </tr>`).join('');
+  $('#tabla').innerHTML = `<div style="overflow:auto"><table><thead><tr><th>PKG</th><th>Cliente</th><th>Peso</th><th>Estado</th><th>Actualizado</th><th>Acción</th></tr></thead><tbody>${rows||`<tr><td colspan="6" class="muted">Sin registros</td></tr>`}</tbody></table></div>`;
+}
+async function guardarEstado(btn){
+  const tr = btn.closest('tr'); const pkg_code = tr.dataset.pkg;
+  const estado = tr.querySelector('.estadoSel').value;
+  const consolidation_id = tr.querySelector('.cidInput').value.trim();
+  const res = await apiPost('api/packages/updateStatus', { pkg_code, estado, consolidation_id });
+  if(res.ok){ btn.textContent='✔'; setTimeout(()=>btn.textContent='Guardar',800); cargarPaquetes(); }
+  else alert('Error: '+(res.error||''));
+}
+
+function abrirConsulta(){
+  const code = ($('#qCode').value || $('#pCliente').value || $('#selCliente').value || '').trim();
+  if(!code) return alert('Ingresa o elige un código de cliente');
+  window.open(`${TRACK_URL}?code=${encodeURIComponent(code)}`, '_blank');
+}
+function irAdmin(){ window.open(ADMIN_URL, '_blank'); }
+function irStore(){ window.open(STORE_URL, '_blank'); }
+
+async function ping(){ const res = await apiGet('',{}); $('#sheetState').textContent = (res && res.ok!==false)?'Conectado':'Sin conexión'; }
+document.addEventListener('DOMContentLoaded', async ()=>{ await ping(); await recargarClientes(); await cargarPaquetes(); });
+</script>
+</body>
+</html>
