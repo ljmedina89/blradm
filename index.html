@@ -79,13 +79,12 @@
     font-size:12px;
   }
   .btn:active{transform:translateY(1px)}
-
+  .btn:disabled{opacity:.55;cursor:default;transform:none;}
   .btn.ghost{
     background:linear-gradient(135deg,#020617,#020617);
     border:1px solid #1f2937;
     color:var(--muted);
   }
-
   .login-footer{
     margin-top:12px;
     font-size:12px;
@@ -192,6 +191,21 @@
     font-size:13px;
   }
 
+  /* iframe envíos */
+  #enviosFrameWrap{
+    display:none;
+    margin-top:10px;
+    border-radius:var(--radius-md);
+    border:1px solid #1f2937;
+    overflow:hidden;
+  }
+  #enviosFrame{
+    width:100%;
+    height:420px;
+    border:0;
+    background:#020617;
+  }
+
   @media (max-width:980px){
     .grid{grid-template-columns:1fr 1fr}
   }
@@ -224,7 +238,8 @@
 
   <div class="login-footer">
     Usa las credenciales configuradas para este panel.<br>
-      </div>
+    (Bloqueo básico en navegador, no es seguridad bancaria 😄)
+  </div>
 </div>
 
 <!-- APP PRINCIPAL -->
@@ -306,23 +321,27 @@
       <p id="pOut" class="muted" style="margin-top:8px"></p>
     </section>
 
-    <!-- Accesos -->
+    <!-- Envíos a Ecuador (usa tu formulario EXISTENTE) -->
     <section class="card">
-      <h3>Accesos rápidos</h3>
+      <h3>Envíos de paquetes a Ecuador</h3>
+      <p class="muted" style="margin-top:0;margin-bottom:8px">
+        Usa el formulario detallado de remitente / destinatario que ya tienes para registrar envíos.
+      </p>
+
       <div class="row">
-        <div>
-          <label>Código cliente (para consulta pública)</label>
-          <input id="qCode" placeholder="BLR-ABC123">
-        </div>
-        <div style="display:flex;align-items:flex-end">
-          <button class="btn row" onclick="abrirConsulta()">Abrir consulta pública</button>
-        </div>
+        <button class="btn row" onclick="abrirEnviosTab()">Abrir formulario en nueva pestaña</button>
+        <button class="btn ghost row" onclick="toggleEnviosEmbed()">Ver formulario dentro del panel</button>
       </div>
-      <div class="row" style="margin-top:6px">
-        <button class="btn row" onclick="irAdmin()">Abrir Admin Completo</button>
-        <button class="btn row" onclick="irStore()">Abrir Store</button>
+
+      <div id="enviosFrameWrap">
+        <iframe id="enviosFrame" src="" loading="lazy"></iframe>
       </div>
-      <p class="muted" style="margin-top:8px">Admin completo: tabla extendida, estados y consolidación.</p>
+
+      <div style="margin-top:10px;border-top:1px dashed #1f2937;padding-top:8px;font-size:12px" class="muted">
+        Otros accesos:
+        <button class="btn ghost" style="padding:5px 10px;font-size:11px" onclick="irAdmin()">Admin completo</button>
+        <button class="btn ghost" style="padding:5px 10px;font-size:11px" onclick="irStore()">Store</button>
+      </div>
     </section>
 
   </div>
@@ -354,15 +373,16 @@
   // -------- CONFIG --------
   // ⚠️ Cambia esto por TU URL /exec de Apps Script:
   const API_URL   = 'https://script.google.com/macros/s/AKfycbzp7dqjY-WR3labkHCZJ8B5DSQtUG4Ga9UrAGi7nU0qjsjeVWC5xLGjTSWGBpyVYntQfw/exec';
-  const TRACK_URL = './search/';           // página pública de rastreo
+  // ⚠️ Cambia esto por la ruta donde está tu formulario de envíos
+  // Por ejemplo: './envios/index.html' o '/envios/'
+  const ENVIO_URL = 'https://ingreso.beloura.shop/';
   const ADMIN_URL = './clientes/admin.html';
   const STORE_URL = './beloura-store/';
 
-  // -------- LOGIN (súper básico en front) --------
-  // Puedes cambiar estos usuarios/contraseñas:
+  // -------- LOGIN (básico) --------
   const USERS = [
     { user:'admin', pass:'Aprill2405@' },
-    { user:'leo',   pass:'Mathi0501' }
+    { user:'leo',   pass:'beloura@' }
   ];
 
   const $ = s => document.querySelector(s);
@@ -370,6 +390,7 @@
   const msg = (id,t) => { const el = $('#'+id); el.textContent = t; setTimeout(()=>el.textContent='', 4000); };
   const fmt = n => (Number(n||0).toFixed(2));
   const fmtDate = s => { if(!s) return ''; const d=new Date(s); return isNaN(d)?s:d.toLocaleString(); };
+
   document.addEventListener('DOMContentLoaded', () => {
     $('#year').textContent = new Date().getFullYear();
     checkAuth();
@@ -424,7 +445,6 @@
   }
 
   async function initApp(){
-    // ping, cargar clientes y paquetes
     try{
       const res = await apiGet('ping');
       $('#sheetState').textContent = (res && res.ok) ? '• conectado a Sheets' : '• sin conexión';
@@ -530,12 +550,23 @@
     }
   }
 
-  // -------- Accesos --------
-  function abrirConsulta(){
-    const code = ($('#qCode').value || $('#pCliente').value || $('#selCliente').value || '').trim();
-    if(!code){ alert('Ingresa o elige un código de cliente'); return; }
-    window.open(`${TRACK_URL}?code=${encodeURIComponent(code)}`, '_blank');
+  // -------- Envíos: integra tu formulario existente --------
+  function abrirEnviosTab(){
+    window.open(ENVIO_URL, '_blank');
   }
+
+  function toggleEnviosEmbed(){
+    const wrap = $('#enviosFrameWrap');
+    const frame = $('#enviosFrame');
+    if(wrap.style.display === 'none' || !wrap.style.display){
+      if(!frame.src){ frame.src = ENVIO_URL; }
+      wrap.style.display = 'block';
+    }else{
+      wrap.style.display = 'none';
+    }
+  }
+
+  // -------- Accesos --------
   function irAdmin(){ window.open(ADMIN_URL, '_blank'); }
   function irStore(){ window.open(STORE_URL, '_blank'); }
 </script>
