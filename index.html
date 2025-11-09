@@ -6,43 +6,270 @@
 <title>BLR • Panel Principal</title>
 <meta name="color-scheme" content="light dark"/>
 <style>
-  :root{--bg:#0b0c10;--panel:#111318;--muted:#9aa4ae;--text:#e8edf2;--primary:#2563eb;--chip:#1b1f2a;--border:#232734;--shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35)}
-  *{box-sizing:border-box} html,body{height:100%} body{margin:0;background:linear-gradient(180deg,#0b0c10,#0d1117);color:var(--text);font:15px/1.5 system-ui,Segoe UI,Inter,Roboto,Arial}
-  .container{max-width:1100px;margin:auto;padding:24px} a{color:inherit;text-decoration:none}
-  header{display:flex;gap:14px;align-items:center;justify-content:space-between;margin-bottom:16px}
-  .brand{display:flex;gap:10px;align-items:center}.logo{width:36px;height:36px;border-radius:10px;background:radial-gradient(120px 60px at 20% 20%,#3b82f6 0,#1e40af 35%,#111318 65%);display:grid;place-items:center}
-  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-  .card{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:16px;min-height:170px}
-  .card h3{margin:0 0 10px;font-size:16px}.muted{color:var(--muted)}
-  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  input,select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:#0f131a;color:var(--text)}
-  .btn{cursor:pointer;border:1px solid #2d3a7b;background:linear-gradient(180deg,#2b47e5,#2038d0);color:#fff;border-radius:12px;padding:10px 14px;font-weight:700}
-  .btn.ghost{background:#0f172a;border-color:#2b2f3a}.btn.row{width:100%;display:flex;justify-content:center;gap:8px}
-  table{width:100%;border-collapse:collapse} th,td{padding:10px;border-bottom:1px dashed var(--border);text-align:left}
-  footer{margin-top:24px;text-align:center;color:var(--muted)}
-  @media (max-width:980px){ .grid{grid-template-columns:1fr 1fr} } @media (max-width:680px){ .grid{grid-template-columns:1fr} .row{grid-template-columns:1fr} }
+  :root{
+    --bg:#050814;
+    --bg2:#070b18;
+    --panel:#0b0f1e;
+    --panel-soft:#0f1524;
+    --muted:#9aa4ae;
+    --text:#f5f7fb;
+    --primary:#0056ff;
+    --primary-soft:#1a4dff;
+    --accent:#00bfa6;
+    --border:#1c2335;
+    --chip:#10182a;
+    --shadow:0 1px 2px rgba(0,0,0,.35),0 16px 40px rgba(0,0,0,.55);
+    --radius-xl:22px;
+    --radius-md:14px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    background:radial-gradient(circle at top,#0f172a 0,#050814 55%,#020617 100%);
+    color:var(--text);
+    font:15px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Ubuntu,Arial,sans-serif;
+  }
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .container{max-width:1100px;margin:auto;padding:24px 18px 32px}
+
+  /* LOGIN */
+  #loginBox{
+    max-width:420px;
+    margin:60px auto;
+    padding:24px 20px 26px;
+    border-radius:var(--radius-xl);
+    background:linear-gradient(145deg,rgba(15,23,42,.94),rgba(15,23,42,.98));
+    border:1px solid rgba(37,99,235,.6);
+    box-shadow:var(--shadow);
+  }
+  #loginBox h1{
+    margin:0 0 6px;
+    font-size:22px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+  }
+  #loginBox p{margin:0 0 14px;color:var(--muted);font-size:13px}
+  .field{margin-bottom:10px}
+  .field label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
+  .field input{
+    width:100%;
+    padding:10px 11px;
+    border-radius:12px;
+    border:1px solid var(--border);
+    background:radial-gradient(circle at top,rgba(30,64,175,.25),rgba(15,23,42,1));
+    color:var(--text);
+    outline:none;
+  }
+  .field input:focus{
+    border-color:var(--primary);
+    box-shadow:0 0 0 3px rgba(37,99,235,.4);
+  }
+  .btn{
+    cursor:pointer;
+    border-radius:999px;
+    border:1px solid #1d4ed8;
+    background:linear-gradient(135deg,var(--primary),var(--primary-soft));
+    color:#fff;
+    padding:11px 18px;
+    font-weight:700;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    font-size:12px;
+  }
+  .btn:active{transform:translateY(1px)}
+
+  .btn.ghost{
+    background:linear-gradient(135deg,#020617,#020617);
+    border:1px solid #1f2937;
+    color:var(--muted);
+  }
+
+  .login-footer{
+    margin-top:12px;
+    font-size:12px;
+    color:var(--muted);
+    text-align:center;
+  }
+
+  /* HEADER APP */
+  header{
+    display:flex;
+    gap:14px;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:16px;
+  }
+  .brand{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    min-width:0;
+  }
+  .logo{
+    width:40px;
+    height:40px;
+    border-radius:999px;
+    background:radial-gradient(circle at 30% 20%,#3b82f6 0,#1d4ed8 30%,#020617 70%);
+    display:grid;
+    place-items:center;
+    box-shadow:0 0 0 2px rgba(15,23,42,.7);
+  }
+  .brand b{font-size:18px;letter-spacing:.06em;text-transform:uppercase}
+  .muted{color:var(--muted);font-size:13px}
+  .userBox{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    font-size:13px;
+  }
+  .chipUser{
+    padding:6px 10px;
+    border-radius:999px;
+    background:var(--chip);
+    border:1px solid var(--border);
+  }
+
+  /* PANELS */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:14px;
+  }
+  .card{
+    background:linear-gradient(145deg,rgba(15,23,42,.9),rgba(15,23,42,.95));
+    border:1px solid rgba(30,64,175,.55);
+    border-radius:var(--radius-xl);
+    box-shadow:var(--shadow);
+    padding:16px 16px 18px;
+    min-height:170px;
+  }
+  .card h3{margin:0 0 8px;font-size:16px}
+  .row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  input,select,textarea{
+    width:100%;
+    padding:9px 10px;
+    border-radius:10px;
+    border:1px solid var(--border);
+    background:radial-gradient(circle at top,rgba(15,23,42,.96),rgba(15,23,42,1));
+    color:var(--text);
+    font-size:13px;
+    outline:none;
+  }
+  textarea{resize:vertical;min-height:60px}
+  label{font-size:12px;color:var(--muted);display:block;margin-bottom:3px}
+  .btn.row{
+    width:100%;
+    display:flex;
+    justify-content:center;
+    gap:6px;
+  }
+
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{
+    padding:9px 8px;
+    border-bottom:1px dashed #1f2937;
+    text-align:left;
+  }
+  th{color:var(--muted);font-weight:600}
+  .tableWrap{
+    border-radius:var(--radius-md);
+    border:1px solid var(--border);
+    background:#020617;
+    padding:4px 2px;
+    box-shadow:0 10px 26px rgba(0,0,0,.55);
+  }
+
+  footer{
+    margin-top:24px;
+    text-align:center;
+    color:var(--muted);
+    font-size:13px;
+  }
+
+  @media (max-width:980px){
+    .grid{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:680px){
+    .grid{grid-template-columns:1fr}
+    .row{grid-template-columns:1fr}
+    header{flex-direction:column;align-items:flex-start}
+  }
 </style>
 </head>
 <body>
-<div class="container">
+
+<!-- LOGIN -->
+<div id="loginBox">
+  <h1>BLR ADMIN</h1>
+  <p>Acceso restringido al panel principal de clientes, paquetes y envíos.</p>
+
+  <div class="field">
+    <label>Usuario</label>
+    <input id="loginUser" placeholder="admin" autocomplete="username">
+  </div>
+  <div class="field">
+    <label>Contraseña</label>
+    <input id="loginPass" type="password" placeholder="••••••" autocomplete="current-password">
+  </div>
+
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:6px">
+    <button class="btn" onclick="doLogin()">Entrar</button>
+  </div>
+
+  <div class="login-footer">
+    Usa las credenciales configuradas para este panel.<br>
+      </div>
+</div>
+
+<!-- APP PRINCIPAL -->
+<div id="app" class="container" style="display:none">
   <header>
     <div class="brand">
-      <div class="logo" aria-hidden="true"></div>
-      <b>BLR Main</b>
-      <span id="sheetState" class="muted">• verificando…</span>
+      <div class="logo" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z" stroke="#93c5fd" stroke-width="1.2"/>
+          <path d="M12 7l4 2.2v5.6L12 17l-4-2.2V9.2L12 7z" fill="#60a5fa"/>
+        </svg>
+      </div>
+      <div>
+        <b>BLR Panel</b><br>
+        <span class="muted" id="sheetState">• verificando conexión…</span>
+      </div>
     </div>
-    <div class="muted">Panel principal — clientes, paquetes, envíos, consulta y tienda</div>
+    <div class="userBox">
+      <span class="chipUser" id="userChip">Sin sesión</span>
+      <button class="btn ghost" onclick="logout()">Cerrar sesión</button>
+    </div>
   </header>
 
   <div class="grid">
 
+    <!-- Clientes -->
     <section class="card">
       <h3>Clientes</h3>
       <div class="row">
-        <div><label class="muted">Nombre</label><input id="cNombre" placeholder="Ej: Linda Martinez"/></div>
-        <div><label class="muted">Teléfono</</label><input id="cTel" placeholder="+1 ..."/></div>
-        <div><label class="muted">Email</label><input id="cEmail" placeholder="correo@ejemplo.com"/></div>
-        <div><label class="muted">Dirección</label><input id="cDir" placeholder="Calle, ciudad"/></div>
+        <div>
+          <label>Nombre</label>
+          <input id="cNombre" placeholder="Ej: Linda Martinez">
+        </div>
+        <div>
+          <label>Teléfono</label>
+          <input id="cTel" placeholder="+1 ...">
+        </div>
+        <div>
+          <label>Email</label>
+          <input id="cEmail" placeholder="correo@ejemplo.com">
+        </div>
+        <div>
+          <label>Dirección</label>
+          <input id="cDir" placeholder="Calle, ciudad">
+        </div>
       </div>
       <div style="display:flex;gap:8px;margin-top:10px">
         <button class="btn" onclick="crearCliente()">+ Crear cliente</button>
@@ -50,18 +277,28 @@
       </div>
       <p id="cOut" class="muted" style="margin-top:8px"></p>
       <div style="margin-top:6px">
-        <label class="muted">Clientes activos</label>
+        <label>Clientes activos</label>
         <select id="selCliente"></select>
       </div>
     </section>
 
+    <!-- Paquetes -->
     <section class="card">
       <h3>Paquetes (ingreso rápido)</h3>
       <div class="row">
-        <div><label class="muted">Cliente</label><select id="pCliente"></select></div>
-        <div><label class="muted">Peso (lb)</label><input id="pPeso" type="number" step="0.01" min="0.01" placeholder="1.85"/></div>
+        <div>
+          <label>Cliente</label>
+          <select id="pCliente"></select>
+        </div>
+        <div>
+          <label>Peso (lb)</label>
+          <input id="pPeso" type="number" step="0.01" min="0.01" placeholder="1.85">
+        </div>
       </div>
-      <div style="margin-top:8px"><label class="muted">Nota</label><textarea id="pNota" rows="2" placeholder="Amazon #..."></textarea></div>
+      <div style="margin-top:8px">
+        <label>Nota</label>
+        <textarea id="pNota" rows="2" placeholder="Amazon #..."></textarea>
+      </div>
       <div style="display:flex;gap:8px;margin-top:10px">
         <button class="btn" onclick="registrarPaquete()">Guardar paquete</button>
         <button class="btn ghost" onclick="cargarPaquetes()">Ver últimos</button>
@@ -69,27 +306,38 @@
       <p id="pOut" class="muted" style="margin-top:8px"></p>
     </section>
 
+    <!-- Accesos -->
     <section class="card">
-      <h3>Accesos</h3>
+      <h3>Accesos rápidos</h3>
       <div class="row">
-        <div><label class="muted">Código cliente (para consulta pública)</label><input id="qCode" placeholder="BLR-ABC123"/></div>
-        <div style="display:flex;align-items:flex-end"><button class="btn row" onclick="abrirConsulta()">Abrir consulta pública</button></div>
+        <div>
+          <label>Código cliente (para consulta pública)</label>
+          <input id="qCode" placeholder="BLR-ABC123">
+        </div>
+        <div style="display:flex;align-items:flex-end">
+          <button class="btn row" onclick="abrirConsulta()">Abrir consulta pública</button>
+        </div>
       </div>
       <div class="row" style="margin-top:6px">
         <button class="btn row" onclick="irAdmin()">Abrir Admin Completo</button>
         <button class="btn row" onclick="irStore()">Abrir Store</button>
       </div>
-      <p class="muted" style="margin-top:8px">Admin completo: consolida/envía con tabla extendida.</p>
+      <p class="muted" style="margin-top:8px">Admin completo: tabla extendida, estados y consolidación.</p>
     </section>
 
   </div>
 
+  <!-- Últimos paquetes -->
   <section class="card" style="margin-top:14px">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
       <h3 style="margin:0">Últimos paquetes</h3>
-      <div style="display:flex;gap:8px">
+      <div style="display:flex;gap:8px;align-items:center">
+        <label style="font-size:12px;color:var(--muted)">Estado</label>
         <select id="fEstado" onchange="cargarPaquetes()">
-          <option value="">Todos</option><option>Recibido</option><option>Consolidado</option><option>Enviado</option>
+          <option value="">Todos</option>
+          <option>Recibido</option>
+          <option>Consolidado</option>
+          <option>Enviado</option>
         </select>
         <button class="btn ghost" onclick="cargarPaquetes()">Actualizar</button>
       </div>
@@ -97,104 +345,199 @@
     <div id="tabla" style="margin-top:10px"></div>
   </section>
 
-  <footer>© <span id="year"></span> BLR • Panel unificado</footer>
+  <footer>
+    © <span id="year"></span> BLR • Panel unificado
+  </footer>
 </div>
 
 <script>
-const API_URL   = 'https://script.google.com/macros/s/AKfycbxfeIXBDJp7XNbDPy1U_r27JCWbW0vgCK3tDBzDWlmi9Ogd0xw7wffvPkPM3q8Xy8k8Ew/exec';
-const TRACK_URL = './search/';
-const ADMIN_URL = './clientes/admin.html';
-const STORE_URL = './beloura-store/';
+  // -------- CONFIG --------
+  // ⚠️ Cambia esto por TU URL /exec de Apps Script:
+  const API_URL   = 'https://script.google.com/macros/s/AKfycbzp7dqjY-WR3labkHCZJ8B5DSQtUG4Ga9UrAGi7nU0qjsjeVWC5xLGjTSWGBpyVYntQfw/exec';
+  const TRACK_URL = './search/';           // página pública de rastreo
+  const ADMIN_URL = './clientes/admin.html';
+  const STORE_URL = './beloura-store/';
 
-const $ = s => document.querySelector(s);
-const toQS = o => new URLSearchParams(o).toString();
-const msg = (id,t) => { const el = $('#'+id); el.textContent = t; setTimeout(()=>el.textContent='', 4000); };
-const fmt = n => (Number(n||0).toFixed(2));
-const fmtDate = s => { if(!s) return ''; const d=new Date(s); return isNaN(d)?s:d.toLocaleString(); }
-$('#year').textContent = new Date().getFullYear();
+  // -------- LOGIN (súper básico en front) --------
+  // Puedes cambiar estos usuarios/contraseñas:
+  const USERS = [
+    { user:'admin', pass:'Aprill2405@' },
+    { user:'leo',   pass:'Mathi0501' }
+  ];
 
-async function apiGet(path, params={}){
-  params._ts = Date.now();
-  const url = `${API_URL}?${toQS({path, ...params})}`;
-  const r = await fetch(url, { method:'GET', headers:{'Accept':'application/json'}, cache:'no-store' });
-  try { return await r.json(); } catch { return {ok:false, error:'bad_json', status:r.status}; }
-}
-async function apiPost(path, body={}){
-  const r = await fetch(API_URL, {
-    method:'POST',
-    headers:{ 'Content-Type':'application/x-www-form-urlencoded' },
-    body: toQS({ path, ...body })
+  const $ = s => document.querySelector(s);
+  const toQS = o => new URLSearchParams(o).toString();
+  const msg = (id,t) => { const el = $('#'+id); el.textContent = t; setTimeout(()=>el.textContent='', 4000); };
+  const fmt = n => (Number(n||0).toFixed(2));
+  const fmtDate = s => { if(!s) return ''; const d=new Date(s); return isNaN(d)?s:d.toLocaleString(); };
+  document.addEventListener('DOMContentLoaded', () => {
+    $('#year').textContent = new Date().getFullYear();
+    checkAuth();
   });
-  try { return await r.json(); } catch { return {ok:false, error:'bad_json', status:r.status}; }
-}
 
-async function recargarClientes(){
-  const res = await apiGet('api/clients');
-  const list = res.ok ? (res.clients||[]) : [];
-  const html = list.map(c=>`<option value="${c.cliente_code}">${c.cliente_code} — ${c.nombre}</option>`).join('') || '<option value="">(Sin clientes)</option>';
-  $('#selCliente').innerHTML = html;
-  $('#pCliente').innerHTML = html;
-}
-async function crearCliente(){
-  const nombre = $('#cNombre').value.trim();
-  const telefono = $('#cTel').value.trim();
-  const email = $('#cEmail').value.trim();
-  const direccion = $('#cDir').value.trim();
-  if(!nombre) return alert('Nombre requerido');
-  const res = await apiPost('api/clients/create', { nombre, telefono, email, direccion });
-  if(res.ok){
-    msg('cOut','Creado: '+res.cliente_code);
-    $('#cNombre').value = $('#cTel').value = $('#cEmail').value = $('#cDir').value = '';
-    const opt = document.createElement('option');
-    opt.value = res.cliente_code; opt.textContent = `${res.cliente_code} — ${nombre}`;
-    $('#selCliente').prepend(opt); $('#pCliente').prepend(opt.cloneNode(true));
-    $('#selCliente').value = res.cliente_code; $('#pCliente').value = res.cliente_code;
-  } else { msg('cOut','Error: '+(res.error||'')); }
-}
+  function checkAuth(){
+    const u = localStorage.getItem('blr_user');
+    if(u){
+      $('#loginBox').style.display = 'none';
+      $('#app').style.display = 'block';
+      $('#userChip').textContent = u;
+      initApp();
+    }else{
+      $('#loginBox').style.display = 'block';
+      $('#app').style.display = 'none';
+    }
+  }
 
-async function registrarPaquete(){
-  const cliente_code = $('#pCliente').value;
-  const peso_lb = parseFloat($('#pPeso').value);
-  const nota = $('#pNota').value.trim();
-  if(!cliente_code) return alert('Selecciona un cliente');
-  if(isNaN(peso_lb) || peso_lb<=0) return alert('Peso inválido');
-  const res = await apiPost('api/packages/create', { cliente_code, peso_lb, nota });
-  if(res.ok){ msg('pOut','Guardado: '+res.pkg_code); $('#pPeso').value=''; $('#pNota').value=''; cargarPaquetes(); }
-  else msg('pOut','Error: '+(res.error||''));
-}
-function estadoSelect(actual){ const opts=['Recibido','Consolidado','Enviado']; return `<select class="estadoSel">${opts.map(o=>`<option ${o===actual?'selected':''}>${o}</option>`).join('')}</select>`; }
-async function cargarPaquetes(){
-  const estado = $('#fEstado').value || '';
-  const res = await apiGet('api/packages', { estado, limit: 20 });
-  const items = res.ok ? (res.packages||[]) : [];
-  const rows = items.map(r=>`
-    <tr data-pkg="${r.pkg_code}">
-      <td>${r.pkg_code}</td><td class="muted">${r.cliente_code}</td><td>${fmt(r.peso_lb)}</td>
-      <td>${estadoSelect(r.estado)}</td><td class="muted">${fmtDate(r.fecha_estado || r.fecha)}</td>
-      <td style="display:flex;gap:6px"><input class="cidInput" placeholder="consolidation_id (opcional)" style="width:170px"/>
-        <button class="btn ghost" onclick="guardarEstado(this)">Guardar</button></td>
-    </tr>`).join('');
-  $('#tabla').innerHTML = `<div style="overflow:auto"><table><thead><tr><th>PKG</th><th>Cliente</th><th>Peso</th><th>Estado</th><th>Actualizado</th><th>Acción</th></tr></thead><tbody>${rows||`<tr><td colspan="6" class="muted">Sin registros</td></tr>`}</tbody></table></div>`;
-}
-async function guardarEstado(btn){
-  const tr = btn.closest('tr'); const pkg_code = tr.dataset.pkg;
-  const estado = tr.querySelector('.estadoSel').value;
-  const consolidation_id = tr.querySelector('.cidInput').value.trim();
-  const res = await apiPost('api/packages/updateStatus', { pkg_code, estado, consolidation_id });
-  if(res.ok){ btn.textContent='✔'; setTimeout(()=>btn.textContent='Guardar',800); cargarPaquetes(); }
-  else alert('Error: '+(res.error||''));
-}
+  function doLogin(){
+    const u = $('#loginUser').value.trim();
+    const p = $('#loginPass').value;
+    const ok = USERS.some(x => x.user === u && x.pass === p);
+    if(!ok){
+      alert('Usuario o contraseña incorrectos');
+      return;
+    }
+    localStorage.setItem('blr_user', u);
+    $('#loginUser').value = '';
+    $('#loginPass').value = '';
+    checkAuth();
+  }
 
-function abrirConsulta(){
-  const code = ($('#qCode').value || $('#pCliente').value || $('#selCliente').value || '').trim();
-  if(!code) return alert('Ingresa o elige un código de cliente');
-  window.open(`${TRACK_URL}?code=${encodeURIComponent(code)}`, '_blank');
-}
-function irAdmin(){ window.open(ADMIN_URL, '_blank'); }
-function irStore(){ window.open(STORE_URL, '_blank'); }
+  function logout(){
+    localStorage.removeItem('blr_user');
+    location.reload();
+  }
 
-async function ping(){ const res = await apiGet('',{}); $('#sheetState').textContent = (res && res.ok!==false)?'Conectado':'Sin conexión'; }
-document.addEventListener('DOMContentLoaded', async ()=>{ await ping(); await recargarClientes(); await cargarPaquetes(); });
+  // -------- API helpers --------
+  async function apiGet(path, params={}){
+    params._ts = Date.now();
+    const url = `${API_URL}?${toQS({ path, ...params })}`;
+    const r = await fetch(url, { method:'GET', headers:{'Accept':'application/json'}, cache:'no-store' });
+    try { return await r.json(); } catch { return {ok:false, error:'bad_json', status:r.status}; }
+  }
+  async function apiPost(path, body={}){
+    const r = await fetch(API_URL, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/x-www-form-urlencoded' },
+      body: toQS({ path, ...body })
+    });
+    try { return await r.json(); } catch { return {ok:false, error:'bad_json', status:r.status}; }
+  }
+
+  async function initApp(){
+    // ping, cargar clientes y paquetes
+    try{
+      const res = await apiGet('ping');
+      $('#sheetState').textContent = (res && res.ok) ? '• conectado a Sheets' : '• sin conexión';
+    }catch(e){
+      $('#sheetState').textContent = '• error de conexión';
+    }
+    await recargarClientes();
+    await cargarPaquetes();
+  }
+
+  // -------- Clientes / Paquetes --------
+  async function recargarClientes(){
+    const res = await apiGet('api/clients');
+    const list = res.ok ? (res.clients||[]) : [];
+    const html = list.map(c=>`<option value="${c.cliente_code}">${c.cliente_code} — ${c.nombre}</option>`).join('') || '<option value="">(Sin clientes)</option>';
+    $('#selCliente').innerHTML = html;
+    $('#pCliente').innerHTML = html;
+  }
+
+  async function crearCliente(){
+    const nombre = $('#cNombre').value.trim();
+    const telefono = $('#cTel').value.trim();
+    const email = $('#cEmail').value.trim();
+    const direccion = $('#cDir').value.trim();
+    if(!nombre){ alert('Nombre requerido'); return; }
+    const res = await apiPost('api/clients/create', { nombre, telefono, email, direccion });
+    if(res.ok){
+      msg('cOut','Creado: '+res.cliente_code);
+      $('#cNombre').value = $('#cTel').value = $('#cEmail').value = $('#cDir').value = '';
+      await recargarClientes();
+      $('#selCliente').value = res.cliente_code;
+      $('#pCliente').value = res.cliente_code;
+    }else{
+      msg('cOut','Error: '+(res.error||''));
+    }
+  }
+
+  async function registrarPaquete(){
+    const cliente_code = $('#pCliente').value;
+    const peso_lb = parseFloat($('#pPeso').value);
+    const nota = $('#pNota').value.trim();
+    if(!cliente_code){ alert('Selecciona un cliente'); return; }
+    if(isNaN(peso_lb) || peso_lb<=0){ alert('Peso inválido'); return; }
+    const res = await apiPost('api/packages/create', { cliente_code, peso_lb, nota });
+    if(res.ok){
+      msg('pOut','Guardado: '+res.pkg_code);
+      $('#pPeso').value = '';
+      $('#pNota').value = '';
+      await cargarPaquetes();
+    }else{
+      msg('pOut','Error: '+(res.error||''));
+    }
+  }
+
+  function estadoSelect(actual){
+    const opts=['Recibido','Consolidado','Enviado'];
+    return `<select class="estadoSel">${opts.map(o=>`<option ${o===actual?'selected':''}>${o}</option>`).join('')}</select>`;
+  }
+
+  async function cargarPaquetes(){
+    const estado = $('#fEstado').value || '';
+    const res = await apiGet('api/packages', { estado, limit: 20 });
+    const items = res.ok ? (res.packages||[]) : [];
+    const rows = items.map(r=>`
+      <tr data-pkg="${r.pkg_code}">
+        <td>${r.pkg_code}</td>
+        <td class="muted">${r.cliente_code}</td>
+        <td>${fmt(r.peso_lb)}</td>
+        <td>${estadoSelect(r.estado)}</td>
+        <td class="muted">${fmtDate(r.fecha_estado || r.fecha)}</td>
+        <td>
+          <input class="cidInput" placeholder="consolidation_id (opcional)" style="width:150px"/>
+          <button class="btn ghost" onclick="guardarEstado(this)">Guardar</button>
+        </td>
+      </tr>`).join('');
+    $('#tabla').innerHTML = `
+      <div class="tableWrap">
+        <div style="overflow:auto">
+          <table>
+            <thead>
+              <tr><th>PKG</th><th>Cliente</th><th>Peso</th><th>Estado</th><th>Actualizado</th><th>Acción</th></tr>
+            </thead>
+            <tbody>
+              ${rows || '<tr><td colspan="6" class="muted">Sin registros</td></tr>'}
+            </tbody>
+          </table>
+        </div>
+      </div>`;
+  }
+
+  async function guardarEstado(btn){
+    const tr = btn.closest('tr');
+    const pkg_code = tr.dataset.pkg;
+    const estado = tr.querySelector('.estadoSel').value;
+    const consolidation_id = tr.querySelector('.cidInput').value.trim();
+    const res = await apiPost('api/packages/updatestatus', { pkg_code, estado, consolidation_id });
+    if(res.ok){
+      btn.textContent = '✔';
+      setTimeout(()=>btn.textContent='Guardar',800);
+      await cargarPaquetes();
+    }else{
+      alert('Error: '+(res.error||''));
+    }
+  }
+
+  // -------- Accesos --------
+  function abrirConsulta(){
+    const code = ($('#qCode').value || $('#pCliente').value || $('#selCliente').value || '').trim();
+    if(!code){ alert('Ingresa o elige un código de cliente'); return; }
+    window.open(`${TRACK_URL}?code=${encodeURIComponent(code)}`, '_blank');
+  }
+  function irAdmin(){ window.open(ADMIN_URL, '_blank'); }
+  function irStore(){ window.open(STORE_URL, '_blank'); }
 </script>
 </body>
 </html>
